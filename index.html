@@ -1,4 +1,113 @@
 <!doctype html>
-<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#101c34"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Cleran"><link rel="manifest" href="./manifest.webmanifest"><title>Cleran Mobile</title><style>
-:root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}*{box-sizing:border-box}body{margin:0;background:#081221;color:#eaf1ff}header{padding:32px 20px 24px;background:linear-gradient(135deg,#182e57,#0b1b31)}header strong{font-size:28px}header p{color:#a9bedc;margin:8px 0}main{max-width:880px;margin:auto;padding:22px 16px 100px}h2{font-size:18px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.card{padding:18px;border-radius:16px;background:#14243d;border:1px solid #294264}.card small{display:block;color:#a3b6d3}.card b{font-size:26px;display:block;margin-top:12px}.wide{grid-column:1/-1}.tag{color:#75dfae}button{padding:12px 18px;border:0;border-radius:12px;background:#4b8bfc;color:white;font-weight:600}footer{padding:20px;color:#aabbd0;font-size:13px}nav{position:fixed;bottom:0;left:0;right:0;background:#14243d;border-top:1px solid #294264;display:flex;justify-content:space-around;padding:13px 8px max(13px,env(safe-area-inset-bottom));font-size:13px}@media(min-width:700px){.grid{grid-template-columns:repeat(4,1fr)}}
-</style></head><body><header><strong>Cleran</strong><p>Mobil yönetim paneli · iPhone ve iPad</p><span class="tag" id="network">Bağlantı kontrol ediliyor</span></header><main><h2>Genel Bakış</h2><div class="grid"><div class="card"><small>Toplam Müşteri</small><b>—</b></div><div class="card"><small>Aktif İşlem</small><b>—</b></div><div class="card"><small>Bekleyen Rapor</small><b>—</b></div><div class="card"><small>Otomasyon</small><b>—</b></div><div class="card wide"><h2>Güvenli başlangıç</h2><p>Uygulama açıldı. Henüz Windows Cleran verilerine bağlı değil; müşteri verileri bu sitede tutulmuyor.</p><button onclick="location.reload()">Yenile</button></div></div><footer>Cleran Mobile · Başlangıç sürümü · Canlı veri senkronizasyonu henüz etkin değil.</footer></main><nav><span>⌂ Panel</span><span>▤ Raporlar</span><span>⚙ Ayarlar</span></nav><script>const e=document.querySelector('#network');function net(){e.textContent=navigator.onLine?'● Çevrimiçi':'● Çevrimdışı'}window.addEventListener('online',net);window.addEventListener('offline',net);net();if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(console.warn));</script></body></html>
+<html lang="tr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101c34">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Cleran">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<link rel="icon" href="./icon.svg" type="image/svg+xml">
+<title>Cleran Mobile</title>
+<style>
+:root{color-scheme:dark;--bg:#081221;--panel:#14243d;--line:#294264;--muted:#a3b6d3;--txt:#eaf1ff;--acc:#4b8bfc;--ok:#75dfae;--warn:#f7b955;--bad:#ff7a7a;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--txt);min-height:100vh}
+header{padding:calc(18px + env(safe-area-inset-top)) 18px 16px;background:linear-gradient(135deg,#182e57,#0b1b31);display:flex;align-items:flex-end;gap:12px}
+header .t{flex:1;min-width:0}header strong{font-size:24px}header p{color:var(--muted);margin:4px 0 0;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+header button{background:rgba(255,255,255,.08);border:1px solid var(--line);color:var(--txt);padding:8px 12px;border-radius:10px;font-size:13px}
+main{max-width:980px;margin:auto;padding:16px 14px calc(96px + env(safe-area-inset-bottom))}
+h2{font-size:17px;margin:20px 0 10px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.card{padding:14px 16px;border-radius:14px;background:var(--panel);border:1px solid var(--line)}
+.card small{display:block;color:var(--muted);font-size:12.5px}.card b{font-size:28px;display:block;margin-top:6px}
+.card.bad b{color:var(--bad)}.card.warn b{color:var(--warn)}.card.ok b{color:var(--ok)}
+.list{display:flex;flex-direction:column;gap:8px}
+.item{padding:12px 14px;border-radius:12px;background:var(--panel);border:1px solid var(--line)}
+.item .r{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.item b{font-size:15px}.item small{color:var(--muted);font-size:12.5px;display:block;margin-top:3px}
+.pill{font-size:11.5px;padding:2px 8px;border-radius:99px;border:1px solid var(--line);white-space:nowrap}
+.pill.bad{color:var(--bad);border-color:#7a3340}.pill.warn{color:var(--warn);border-color:#7a5a20}.pill.ok{color:var(--ok);border-color:#2d6a50}
+.seg{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}.seg button{background:var(--panel);border:1px solid var(--line);color:var(--txt);border-radius:99px;padding:7px 12px;font-size:13px}.seg button.on{background:var(--acc);border-color:var(--acc)}
+input[type=search],input[type=password]{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:#0d1a2e;color:var(--txt);font-size:16px}
+.btn{padding:13px 18px;border:0;border-radius:12px;background:var(--acc);color:#fff;font-weight:600;font-size:15px;width:100%}
+.btn.sec{background:var(--panel);border:1px solid var(--line)}
+.center{max-width:440px;margin:6vh auto 0;text-align:left}
+.note{color:var(--muted);font-size:13.5px;line-height:1.5}.err{color:var(--bad);font-size:14px;min-height:20px;margin:8px 0}
+.stale{background:#3a2a0e;border:1px solid #7a5a20;color:#ffd99a;padding:10px 12px;border-radius:12px;font-size:13px;margin-bottom:10px}
+nav{position:fixed;bottom:0;left:0;right:0;background:var(--panel);border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:8px 6px calc(8px + env(safe-area-inset-bottom))}
+nav button{background:none;border:0;color:var(--muted);font-size:12px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px;border-radius:10px}
+nav button span{font-size:20px}nav button.on{color:var(--txt);background:rgba(75,139,252,.18)}
+.empty{color:var(--muted);text-align:center;padding:30px 10px}
+footer{color:#7f93b0;font-size:12px;text-align:center;margin-top:24px;line-height:1.5}
+@media(min-width:700px){.grid{grid-template-columns:repeat(3,1fr)}.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}}
+[hidden]{display:none!important}
+</style></head>
+<body>
+<header><div class="t"><strong>Cleran</strong><p id="sub">Mobil özet · iPhone ve iPad</p></div><button id="lockBtn" hidden>🔒 Kilitle</button></header>
+<main id="app"></main>
+<nav id="nav" hidden>
+  <button data-v="panel" class="on"><span>⌂</span>Panel</button>
+  <button data-v="decl"><span>▤</span>Beyanname</button>
+  <button data-v="tasks"><span>✓</span>İşler</button>
+  <button data-v="firms"><span>▦</span>Firmalar</button>
+  <button data-v="set"><span>⚙</span>Ayarlar</button>
+</nav>
+<input type="file" id="file" accept=".cleran,application/json,text/plain" hidden>
+<script>
+'use strict';
+/* Cleran Mobile · masaüstü Cleran'ın PIN ile şifrelediği özet dosyasını (Cleran-Mobil.cleran) yalnız bu cihazda çözer.
+   Hiçbir sunucuya veri gönderilmez; şifreli dosya cihazda saklanır, çözülmüş veri yalnız bellekte durur. */
+const KEY='cleranMobileBlob',TRIES='cleranMobileTries',$=s=>document.querySelector(s),app=$('#app');
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const LS={get:k=>{try{return localStorage.getItem(k)}catch{return null}},set:(k,v)=>{try{localStorage.setItem(k,v);return true}catch{return false}},del:k=>{try{localStorage.removeItem(k)}catch{}}};
+let data=null,view='panel',pending=null,hiddenAt=0,q='',declFilter='late';
+const trDate=d=>{const m=String(d||'').match(/^(\d{4})-(\d{2})-(\d{2})/);return m?`${m[3]}.${m[2]}.${m[1]}`:String(d||'')};
+const today=()=>new Date().toISOString().slice(0,10);
+const ago=iso=>{const h=(Date.now()-Date.parse(iso))/36e5;if(!isFinite(h))return'';if(h<1)return'az önce';if(h<24)return Math.round(h)+' saat önce';return Math.round(h/24)+' gün önce'};
+const b64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+async function decrypt(blob,pin){const o=JSON.parse(blob);if(o.format!=='cleran-mobile')throw Error('Bu bir Cleran mobil özet dosyası değil.');
+  const base=await crypto.subtle.importKey('raw',new TextEncoder().encode(pin),'PBKDF2',false,['deriveKey']);
+  const key=await crypto.subtle.deriveKey({name:'PBKDF2',salt:b64(o.salt),iterations:o.iter||250000,hash:'SHA-256'},base,{name:'AES-GCM',length:256},false,['decrypt']);
+  let plain;try{plain=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64(o.iv)},key,b64(o.data))}catch{throw Error('PIN yanlış ya da dosya bozuk.')}
+  return JSON.parse(new TextDecoder().decode(plain))}
+function lockScreen(msg){data=null;$('#nav').hidden=true;$('#lockBtn').hidden=true;$('#sub').textContent='Mobil özet · iPhone ve iPad';
+  const stored=LS.get(KEY)||pending;
+  if(!stored){app.innerHTML=`<div class="center"><h2>Başlarken</h2><p class="note">1. Bilgisayardaki Cleran'da üstteki <b>📱 Mobil</b> düğmesiyle PIN belirleyip özet dosyasını oluşturun. Dosya OneDrive'daki Cleran klasörüne <b>Cleran-Mobil.cleran</b> adıyla kaydedilir.</p><p class="note">2. Bu ekranda <b>Özet dosyasını aç</b> → Dosyalar › OneDrive › Cleran-Mobil.cleran.</p><p class="note">3. PIN'inizi girin. Veriler yalnız bu cihazda, şifreli tutulur.</p><button class="btn" id="pick">Özet dosyasını aç</button><p class="err" id="err">${esc(msg||'')}</p><footer>Cleran Mobile · veri sunucuya gönderilmez</footer></div>`;
+    $('#pick').onclick=()=>$('#file').click();return}
+  let meta={};try{meta=JSON.parse(stored)}catch{}
+  app.innerHTML=`<div class="center"><h2>🔒 PIN ile açın</h2><p class="note">${pending?'Yeni özet dosyası':'Kayıtlı özet'}${meta.generated_at?' · '+esc(ago(meta.generated_at))+' oluşturuldu':''}</p><input type="password" id="pin" inputmode="text" autocomplete="current-password" placeholder="PIN"><p class="err" id="err">${esc(msg||'')}</p><button class="btn" id="go">Aç</button><p></p><button class="btn sec" id="pick">Başka özet dosyası aç</button></div>`;
+  const go=async()=>{const pin=$('#pin').value;if(!pin)return;$('#err').textContent='Açılıyor…';try{data=await decrypt(stored,pin);if(pending){if(!LS.set(KEY,pending))$('#err').textContent='Cihaz depolaması kullanılamadı; özet yalnız bu oturumda açık.';pending=null}LS.del(TRIES);show()}catch(e){const n=Number(LS.get(TRIES)||0)+1;LS.set(TRIES,String(n));if(n>=8&&!pending){LS.del(KEY);LS.del(TRIES);return lockScreen('8 hatalı deneme: kayıtlı özet bu cihazdan silindi. Dosyayı yeniden açın.')}$('#err').textContent=e.message+(n>=5&&!pending?` (${8-n} deneme kaldı)`:'')}};
+  $('#go').onclick=go;$('#pin').onkeydown=e=>{if(e.key==='Enter')go()};$('#pick').onclick=()=>$('#file').click();setTimeout(()=>$('#pin').focus(),50)}
+$('#file').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;const t=await f.text();try{const o=JSON.parse(t);if(o.format!=='cleran-mobile')throw 0}catch{return lockScreen('Seçilen dosya Cleran mobil özeti değil.')}pending=t;lockScreen()};
+function show(){$('#nav').hidden=false;$('#lockBtn').hidden=false;$('#sub').textContent=`${data.user||''} · ${ago(data.generated_at)}`;render()}
+const declState=d=>{const t=today();if(d.due&&d.due<t)return['bad','Gecikti'];const w=new Date(Date.now()+7*864e5).toISOString().slice(0,10);if(d.due&&d.due<=w)return['warn','7 gün içinde'];return['','Açık']};
+const declItem=d=>{const[c,l]=declState(d);return`<div class="item"><div class="r"><b>${esc(d.company)}</b><span class="pill ${c}">${l}</span></div><small>${esc(d.type)} · ${esc(d.period)} · son gün ${esc(trDate(d.due))}${d.who?' · '+esc(d.who):''}</small>${d.note?`<small>${esc(d.note)}</small>`:''}</div>`};
+const taskItem=t=>`<div class="item"><div class="r"><b>${esc(t.title)}</b><span class="pill ${t.priority==='Yüksek'||t.priority==='High'?'warn':''}">${esc(t.status)}</span></div><small>${esc(t.company||'')}${t.who?' · '+esc(t.who):''}${t.at?' · '+esc(trDate(t.at)):''}</small></div>`;
+const match=(o,keys)=>!q||keys.some(k=>String(o[k]||'').toLocaleLowerCase('tr-TR').includes(q.toLocaleLowerCase('tr-TR')));
+const search=ph=>`<input type="search" id="q" placeholder="${ph}" value="${esc(q)}" style="margin-bottom:10px">`;
+function render(){if(!data)return;const K=data.kpi||{},t=today();let h='';
+  const old=(Date.now()-Date.parse(data.generated_at))/36e5>24?`<div class="stale">Özet ${esc(ago(data.generated_at))} oluşturuldu. Güncel bilgi için bilgisayarda 📱 Mobil ile yenileyip dosyayı tekrar açın.</div>`:'';
+  if(view==='panel'){const late=(data.declarations||[]).filter(d=>d.due&&d.due<t),soon=(data.declarations||[]).filter(d=>declState(d)[0]==='warn');
+    h=`${old}<div class="grid"><div class="card"><small>Firma</small><b>${K.companies??'—'}</b></div><div class="card bad"><small>Geciken beyanname</small><b>${K.late??0}</b></div><div class="card warn"><small>7 gün içinde</small><b>${K.due7??0}</b></div><div class="card"><small>Açık beyanname</small><b>${K.open_decl??0}</b></div><div class="card ok"><small>Bu ay onaylanan</small><b>${K.done_month??0}</b></div><div class="card"><small>Açık iş</small><b>${K.open_tasks??0}</b></div></div>
+    <div class="two"><div><h2>Gecikenler</h2><div class="list">${late.slice(0,15).map(declItem).join('')||'<div class="empty">Geciken beyanname yok 🎉</div>'}</div></div><div><h2>Yaklaşanlar (7 gün)</h2><div class="list">${soon.slice(0,15).map(declItem).join('')||'<div class="empty">Yaklaşan beyanname yok</div>'}</div></div></div>`}
+  else if(view==='decl'){let L=(data.declarations||[]).filter(d=>declFilter==='all'||(declFilter==='late'?declState(d)[0]==='bad':declFilter==='soon'?declState(d)[0]==='warn':true)).filter(d=>match(d,['company','type','period','who']));
+    h=`${old}<div class="seg">${[['late','Geciken'],['soon','7 gün'],['all','Tümü']].map(([k,l])=>`<button data-f="${k}" class="${declFilter===k?'on':''}">${l}</button>`).join('')}</div>${search('Firma, beyanname, sorumlu ara')}<div class="list">${L.slice(0,300).map(declItem).join('')||'<div class="empty">Kayıt yok</div>'}</div>`}
+  else if(view==='tasks'){const L=(data.tasks||[]).filter(x=>match(x,['title','company','who','status']));h=`${old}${search('İş, firma, kişi ara')}<div class="list">${L.slice(0,300).map(taskItem).join('')||'<div class="empty">Açık iş yok</div>'}</div>`}
+  else if(view==='firms'){const L=(data.companies||[]).filter(x=>match(x,['name','tax']));h=`${search('Firma adı ya da VKN ara')}<div class="list">${L.slice(0,400).map(c=>`<div class="item"><div class="r"><b>${esc(c.name)}</b>${c.tax?`<span class="pill" data-copy="${esc(c.tax)}">${esc(c.tax)} ⧉</span>`:''}</div></div>`).join('')||'<div class="empty">Firma yok</div>'}</div>`}
+  else{h=`<h2>Ayarlar</h2><div class="list"><div class="item"><b>Özet</b><small>${esc(trDate(String(data.generated_at).slice(0,10)))} · ${esc(ago(data.generated_at))} · ${esc(data.user||'')}</small></div><button class="btn" id="newf">Yeni özet dosyası aç</button><button class="btn sec" id="lock2">🔒 Kilitle</button><button class="btn sec" id="wipe" style="color:var(--bad)">Bu cihazdan sil</button></div><footer>Veriler bu cihazda PIN ile şifreli saklanır; 5 dk arka planda kalınca otomatik kilitlenir. 8 hatalı PIN denemesinde kayıtlı özet silinir.<br>Cleran Mobile · sürüm 1.0</footer>`}
+  app.innerHTML=h;window.scrollTo(0,0);
+  const qi=$('#q');if(qi){qi.oninput=()=>{q=qi.value;const pos=qi.selectionStart;render();const n=$('#q');n.focus();try{n.setSelectionRange(pos,pos)}catch{}}}
+  app.querySelectorAll('[data-f]').forEach(b=>b.onclick=()=>{declFilter=b.dataset.f;render()});
+  app.querySelectorAll('[data-copy]').forEach(b=>b.onclick=()=>{navigator.clipboard?.writeText(b.dataset.copy).then(()=>{b.textContent='Kopyalandı ✓'}).catch(()=>{})});
+  if($('#newf'))$('#newf').onclick=()=>$('#file').click();if($('#lock2'))$('#lock2').onclick=()=>lockScreen();
+  if($('#wipe'))$('#wipe').onclick=()=>{if(confirm('Kayıtlı özet bu cihazdan silinsin mi?')){LS.del(KEY);LS.del(TRIES);lockScreen()}}}
+document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>{view=b.dataset.v;q='';document.querySelectorAll('#nav button').forEach(x=>x.classList.toggle('on',x===b));render()});
+$('#lockBtn').onclick=()=>lockScreen();
+document.addEventListener('visibilitychange',()=>{if(document.hidden)hiddenAt=Date.now();else if(data&&hiddenAt&&Date.now()-hiddenAt>5*60e3)lockScreen()});
+if(!window.crypto||!crypto.subtle)app.innerHTML='<div class="center"><p class="err">Bu tarayıcı güvenli şifre çözmeyi desteklemiyor. Safari ile https adresinden açın.</p></div>';else lockScreen();
+if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+</script>
+</body></html>
